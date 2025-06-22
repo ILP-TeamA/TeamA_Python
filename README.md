@@ -2,21 +2,33 @@
 🍺 ビール売上予測システム
 
 概要
+
 このシステムは、過去の売上実績と気象データを活用した機械学習により、ビールの日次売上量を予測し、最適な発注量を提案するAIシステムです。
 
 📁 プロジェクト構成
 
 beer-prediction-system/
-├── model_training/              # モデル訓練関連
+
+├── model_training/ # モデル訓練関連
+
 │   ├── model_train.py          # メインの訓練スクリプト
+
 │   └── data/                   # 訓練データ
+
 │       ├── sales.csv           # 売上実績データ（2024/4/1～2025/3/31）
+
 │       └── weather.csv         # 気象データ（同期間）
+
 ├── trained_models_hyperopt/     # 訓練済みモデル保存先
+
 │   ├── metadata.pkl            # モデルメタデータ
+
 │   ├── scalers.pkl            # データ正規化器
+
 │   └── {beer_name}_model.pkl  # 各ビール種類のモデル
+
 ├── function_app.py             # 予測API（Azure Functions）
+
 └── README.md                   # 本ドキュメント
 
 🤖 モデル訓練
@@ -28,8 +40,11 @@ beer-prediction-system/
 訓練内容
 
 売上実績データ: 各ビール種類の日次売上数量
+
 気象データ: 気温、降水量、日照時間、湿度等
+
 特徴工程: 曜日、季節性、顧客数、天気要因等の複合特徴量生成
+
 ハイパーパラメータ最適化: 最適なモデルパラメータの自動探索
 
 対象ビール種類
