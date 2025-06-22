@@ -1,104 +1,224 @@
 # TeamA_Python
-🍺 ビール売上予測システム
 
-概要
+# 🍺 ビール売上予測システム
 
-このシステムは、過去の売上実績と気象データを活用した機械学習により、ビールの日次売上量を予測し、最適な発注量を提案するAIシステムです。
+<div align="center">
 
-📁 プロジェクト構成
+![GitHub repo size](https://img.shields.io/github/repo-size/username/beer-prediction-system)
+![GitHub last commit](https://img.shields.io/github/last-commit/username/beer-prediction-system)
+![Python version](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Azure Functions](https://img.shields.io/badge/Azure-Functions-blue.svg)
 
+**AIを活用したビールの売上予測・発注最適化システム**
+
+</div>
+
+---
+
+## 📋 目次
+
+- [概要](#-概要)
+- [システム構成](#-システム構成)
+- [データセット](#-データセット)
+- [セットアップ](#-セットアップ)
+- [使用方法](#-使用方法)
+- [API仕様](#-api仕様)
+- [予測結果例](#-予測結果例)
+- [技術仕様](#-技術仕様)
+- [性能指標](#-性能指標)
+
+---
+
+## 🎯 概要
+
+このシステムは、**2024年4月1日～2025年3月31日**の1年間の売上実績と気象データを活用した機械学習により、ビールの日次売上量を予測し、最適な発注量を提案するAIシステムです。
+
+
+## 📁 システム構成
+
+```
 beer-prediction-system/
+├── 📁 model_training/              # モデル訓練関連
+│   ├── 🐍 model_train.py          # メイン訓練スクリプト
+│   └── 📁 data/                   # 訓練データ
+│       ├── 📊 sales.csv           # 売上実績データ（2024/4/1～2025/3/31）
+│       └── 🌤️ weather.csv         # 気象データ（同期間）
+├── 📁 trained_models_hyperopt/     # 訓練済みモデル保存先
+│   ├── 📋 metadata.pkl            # モデルメタデータ
+│   ├── ⚖️ scalers.pkl             # データ正規化器
+│   └── 🤖 {beer_name}_model.pkl   # 各ビール種類のモデル
+├── ⚙️ function_app.py             # 予測API（Azure Functions）
+├── 📋 requirements.txt            # 依存関係
+└── 📖 README.md                   # 本ドキュメント
+```
 
-├── model_training/ # モデル訓練関連
+---
 
-│   ├── model_train.py          # メインの訓練スクリプト
+## 📊 データセット
 
-│   └── data/                   # 訓練データ
+### 📈 売上データ (`sales.csv`)
 
-│        ├── sales.csv           # 売上実績データ（2024/4/1～2025/3/31）
+<details>
+<summary>📋 データ形式詳細</summary>
 
-│        └── weather.csv         # 気象データ（同期間）
+```csv
+日付,曜日,来客数,ペールエール(本),ラガー(本),IPA(本),ホワイトビール(本),黒ビール(本),フルーツビール(本)
+2024-04-01,月,25,8,7,5,4,2,1
+2024-04-02,火,30,12,9,7,5,3,2
+2024-04-03,水,28,10,8,6,4,2,1
+...
+```
 
-├── trained_models_hyperopt/     # 訓練済みモデル保存先
+**含まれるデータ:**
+- 📅 日付・曜日情報
+- 👥 来客数データ  
+- 🍺 各ビール種類別売上数量
+- 💰 売上金額データ
 
-│   ├── metadata.pkl            # モデルメタデータ
+</details>
 
-│   ├── scalers.pkl            # データ正規化器
+### 🌦️ 気象データ (`weather.csv`)
 
-│   └── {beer_name}_model.pkl  # 各ビール種類のモデル
+<details>
+<summary>📋 データ形式詳細</summary>
 
-├── function_app.py             # 予測API（Azure Functions）
+```csv
+日付,平均気温(℃),最高気温(℃),最低気温(℃),降水量(mm),日照時間(時間),湿度(%)
+2024-04-01,18.5,23.2,14.1,0.0,8.5,65
+2024-04-02,19.1,24.8,15.2,2.3,6.2,72
+2024-04-03,17.8,22.5,13.9,5.1,4.8,78
+...
+```
 
-└── README.md                   # 本ドキュメント
+**含まれるデータ:**
+- 🌡️ 気温情報（平均・最高・最低）
+- 🌧️ 降水量データ
+- ☀️ 日照時間
+- 💧 湿度情報
 
-🤖 モデル訓練
+</details>
 
+### 🍺 対象ビール種類
 
-データ期間
+| ビール種類 | 英語名 |
+|------------|---------|
+| 🍺 ペールエール | Pale Ale |
+| 🍻 ラガー | Lager |
+| 🍺 IPA | India Pale Ale |
+| 🍺 ホワイトビール | White Beer |
+| 🖤 黒ビール | Dark Beer |
+| 🍓 フルーツビール | Fruit Beer |
 
-2024年4月1日 ～ 2025年3月31日 の1年間の実績データを使用
+---
 
+## 🚀 セットアップ
 
-訓練内容
+### 1. リポジトリのクローン
 
-売上実績データ: 各ビール種類の日次売上数量
+```bash
+git clone https://github.com/your-username/beer-prediction-system.git
+cd beer-prediction-system
+```
 
-気象データ: 気温、降水量、日照時間、湿度等
+### 2. 依存関係のインストール
 
-特徴工程: 曜日、季節性、顧客数、天気要因等の複合特徴量生成
+```bash
+pip install -r requirements.txt
+```
 
-ハイパーパラメータ最適化: 最適なモデルパラメータの自動探索
+### 3. 環境変数の設定
 
+```bash
+# OpenWeather API キーの設定
+export OPENWEATHER_API_KEY="your_api_key_here"
 
-対象ビール種類
+# Azure Database接続情報（オプション）
+export AZURE_DB_HOST="your_host"
+export AZURE_DB_PASSWORD="your_password"
+```
 
-ペールエール (Pale Ale)
+---
 
-ラガー (Lager)
+## 🔧 使用方法
 
-IPA (India Pale Ale)
+### ステップ 1: モデル訓練
 
-ホワイトビール (White Beer)
-
-黒ビール (Dark Beer)
-
-フルーツビール (Fruit Beer)
-
-
-🚀 使用方法
-
-1. モデル訓練の実行
+```bash
 cd model_training
 python model_train.py
+```
 
-実行結果:
+**実行結果:**
+- ✅ 訓練済みモデルが `trained_models_hyperopt/` に保存
+- ✅ 各ビール種類に最適化されたモデル生成
+- ✅ ハイパーパラメータ最適化完了
 
-訓練済みモデルが trained_models_hyperopt/ フォルダに保存されます
-各ビール種類ごとに最適化されたモデルファイルが生成されます
+### ステップ 2: 予測APIの起動
 
-2. 予測システムの起動
+#### Azure Functions環境
 
-Azure Functions環境で実行
+```bash
 func start
+```
 
-または直接Python実行
+#### ローカル実行
+
+```bash
 python function_app.py
+```
 
-3. 予測API呼び出し
+### ステップ 3: 予測の実行
 
-POST リクエスト例
+#### cURLでのAPI呼び出し
 
+```bash
 curl -X POST "https://your-function-url/api/predictor" \
   -H "Content-Type: application/json" \
   -d '{"target_date": "2025-04-15"}'
+```
 
+#### Pythonでの呼び出し例
 
-レスポンス例
+```python
+import requests
+import json
 
-json{
+url = "https://your-function-url/api/predictor"
+data = {"target_date": "2025-04-15"}
+
+response = requests.post(url, json=data)
+result = response.json()
+
+print(f"発注推奨量: {result['beer_purchase_recommendations']}")
+```
+
+---
+
+## 📡 API仕様
+
+### エンドポイント
+
+```
+POST https://your-function-url/api/predictor
+```
+
+### リクエスト形式
+
+```json
+{
+  "target_date": "2025-04-15"
+}
+```
+
+### レスポンス形式
+
+#### 🟢 週一（月曜日）の場合
+
+```json
+{
   "type": "monday_order_recommendations",
-  "prediction_date": "2025-04-15",
-  "day_of_week": "周一",
+  "base_date": "2025-04-15",
+  "order_period": "周二至周四 (3天)",
   "beer_purchase_recommendations": {
     "ペールエール": 32.4,
     "ラガー": 27.8,
@@ -107,60 +227,107 @@ json{
     "黒ビール": 7.5,
     "フルーツビール": 5.8
   },
-  "total_order_amount": 105.3
+  "total_order_amount": 105.3,
+  "daily_predictions": {
+    "2025-04-16": { "date": "2025-04-16", "day_of_week": "周二", ... },
+    "2025-04-17": { "date": "2025-04-17", "day_of_week": "周三", ... },
+    "2025-04-18": { "date": "2025-04-18", "day_of_week": "周四", ... }
+  }
 }
+```
 
-📊 システム機能
+#### 🟡 木曜日の場合
 
-🎯 スマート発注提案
+```json
+{
+  "type": "thursday_order_recommendations",
+  "base_date": "2025-04-18",
+  "order_period": "周五至周六及下周一 (3天)",
+  "beer_purchase_recommendations": {
+    "ペールエール": 35.7,
+    "ラガー": 30.2,
+    // ... 其他ビール
+  },
+  "total_order_amount": 114.9
+}
+```
 
-月曜日: 火曜～木曜の3日分の発注量を提案
-木曜日: 金曜～土曜＋翌週月曜の3日分の発注量を提案
-その他の曜日: 「このサービスは月曜日と木曜日のみ利用可能」を表示
+#### 🔴 サービス利用不可の場合
 
-🌤️ 気象データ連携
+```json
+{
+  "message": "該服務僅在周一與周四使用",
+  "target_date": "2025-04-16",
+  "day_of_week": "周二",
+  "status": "service_unavailable",
+  "available_days": ["周一", "周四"],
+  "beer_purchase_recommendations": {}
+}
+```
 
-OpenWeather API との連携
-気温、降水量、天候が売上予測に反映
-過去データ、現在データ、予報データの自動取得
+---
 
-🔄 インテリジェント予測
+## 📊 予測結果例
 
-機械学習モデル: 各ビール種類に最適化された予測アルゴリズム
-特徴工程: 顧客数、曜日効果、季節性、天気影響等を総合分析
-成長率考慮: 前年同期比成長率を予測に反映
+### 💼 実際の予測シナリオ
 
-⚙️ 技術仕様
+#### シナリオ 1: 春の平日（4月15日 月曜日）
 
-開発環境
+**条件:**
+- 🌡️ 気温: 22°C (快適)
+- ☀️ 天候: 晴れ
+- 👥 予想来客数: 28人
 
-Python 3.11+
+**予測結果:**
 
-Azure Functions (サーバーレス実行環境)
+| ビール種類 | 予測販売数 | 発注推奨数 |
+|------------|------------|------------|
+| ペールエール | 27本 | **32本** |
+| ラガー | 23本 | **28本** |
+| IPA | 15本 | **18本** |
+| ホワイト | 11本 | **14本** |
+| 黒ビール | 6本 | **8本** |
+| フルーツ | 5本 | **6本** |
 
-機械学習ライブラリ: scikit-learn, pandas, numpy
+**📦 合計発注推奨: 106本** （3日分）
 
-気象API: OpenWeather API
+---
 
-データベース: PostgreSQL (Azure Database)
+## ⚙️ 技術仕様
 
-主要ライブラリ
+### 🐍 開発環境
 
-pythonazure-functions
+| 項目 | バージョン |
+|------|------------|
+| Python | 3.8+ |
+| Azure Functions | Core Tools 4.x |
+| scikit-learn | 1.3+ |
+| pandas | 1.5+ |
+| numpy | 1.24+ |
 
-pandas
+### 🧠 機械学習モデル
 
-numpy
+- **アルゴリズム**: RandomForest / ExtraTrees / GradientBoosting（ハイパーパラメータ最適化済み）
+- **特徴量**: 62種類（時系列・気象・顧客数・交互作用項）
+- **訓練期間**: 2024/4/1～2025/3/31（365日間）
+- **検証方法**: クロスバリデーション
 
-scikit-learn==1.3.2
+### ☁️ インフラ
 
-sqlalchemy
+- **Azure Functions**: サーバーレス実行環境
+- **Azure Database**: PostgreSQL データストレージ
+- **OpenWeather API**: リアルタイム気象データ
+- **GitHub Actions**: CI/CD パイプライン
 
-requests
+---
 
-📈 予測精度
+## 📈 性能指標
 
-性能指標
+### 🎯 予測精度
 
-平均予測精度: 66.9%以上
+| 指標 | 値 |
+|------|----|
+| **平均R²スコア** | 0.669 |
+
+---
 
