@@ -20,33 +20,45 @@ beer-prediction-system/
 └── README.md                   # 本ドキュメント
 
 🤖 モデル訓練
+
 データ期間
+
 2024年4月1日 ～ 2025年3月31日 の1年間の実績データを使用
 
 訓練内容
+
 売上実績データ: 各ビール種類の日次売上数量
 気象データ: 気温、降水量、日照時間、湿度等
 特徴工程: 曜日、季節性、顧客数、天気要因等の複合特徴量生成
 ハイパーパラメータ最適化: 最適なモデルパラメータの自動探索
 
 対象ビール種類
+
 ペールエール (Pale Ale)
+
 ラガー (Lager)
+
 IPA (India Pale Ale)
+
 ホワイトビール (White Beer)
+
 黒ビール (Dark Beer)
+
 フルーツビール (Fruit Beer)
 
 🚀 使用方法
+
 1. モデル訓練の実行
 cd model_training
 python model_train.py
 
 実行結果:
+
 訓練済みモデルが trained_models_hyperopt/ フォルダに保存されます
 各ビール種類ごとに最適化されたモデルファイルが生成されます
 
 2. 予測システムの起動
+
 Azure Functions環境で実行
 func start
 
@@ -80,6 +92,7 @@ json{
 }
 
 📊 システム機能
+
 🎯 スマート発注提案
 
 月曜日: 火曜～木曜の3日分の発注量を提案
@@ -99,23 +112,36 @@ OpenWeather API との連携
 成長率考慮: 前年同期比成長率を予測に反映
 
 ⚙️ 技術仕様
+
 開発環境
 
 Python 3.11+
+
 Azure Functions (サーバーレス実行環境)
+
 機械学習ライブラリ: scikit-learn, pandas, numpy
+
 気象API: OpenWeather API
+
 データベース: PostgreSQL (Azure Database)
 
 主要ライブラリ
+
 pythonazure-functions
+
 pandas
+
 numpy
+
 scikit-learn==1.3.2
+
 sqlalchemy
+
 requests
 
 📈 予測精度
+
 性能指標
+
 平均予測精度: 66.9%以上
 
