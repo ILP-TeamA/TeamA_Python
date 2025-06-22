@@ -1,19 +1,4 @@
-# TeamA_Python
-
 # 🍺 ビール売上予測システム
-
-<div align="center">
-
-![GitHub repo size](https://img.shields.io/github/repo-size/username/beer-prediction-system)
-![GitHub last commit](https://img.shields.io/github/last-commit/username/beer-prediction-system)
-![Python version](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Azure Functions](https://img.shields.io/badge/Azure-Functions-blue.svg)
-
-**AIを活用したビールの売上予測・発注最適化システム**
-
-</div>
-
----
 
 ## 📋 目次
 
