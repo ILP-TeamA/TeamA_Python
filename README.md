@@ -1,8 +1,11 @@
 # TeamA_Python
 🍺 ビール売上予測システム
+
 概要
 このシステムは、過去の売上実績と気象データを活用した機械学習により、ビールの日次売上量を予測し、最適な発注量を提案するAIシステムです。
+
 📁 プロジェクト構成
+
 beer-prediction-system/
 ├── model_training/              # モデル訓練関連
 │   ├── model_train.py          # メインの訓練スクリプト
@@ -15,6 +18,7 @@ beer-prediction-system/
 │   └── {beer_name}_model.pkl  # 各ビール種類のモデル
 ├── function_app.py             # 予測API（Azure Functions）
 └── README.md                   # 本ドキュメント
+
 🤖 モデル訓練
 データ期間
 2024年4月1日 ～ 2025年3月31日 の1年間の実績データを使用
@@ -50,12 +54,16 @@ func start
 python function_app.py
 
 3. 予測API呼び出し
+
 POST リクエスト例
-bashcurl -X POST "https://your-function-url/api/predictor" \
+
+curl -X POST "https://your-function-url/api/predictor" \
   -H "Content-Type: application/json" \
   -d '{"target_date": "2025-04-15"}'
 
+
 レスポンス例
+
 json{
   "type": "monday_order_recommendations",
   "prediction_date": "2025-04-15",
