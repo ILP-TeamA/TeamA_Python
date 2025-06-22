@@ -15,9 +15,9 @@ beer-prediction-system/
 
 │   └── data/                   # 訓練データ
 
-│       ├── sales.csv           # 売上実績データ（2024/4/1～2025/3/31）
+│        ├── sales.csv           # 売上実績データ（2024/4/1～2025/3/31）
 
-│       └── weather.csv         # 気象データ（同期間）
+│        └── weather.csv         # 気象データ（同期間）
 
 ├── trained_models_hyperopt/     # 訓練済みモデル保存先
 
@@ -33,9 +33,11 @@ beer-prediction-system/
 
 🤖 モデル訓練
 
+
 データ期間
 
 2024年4月1日 ～ 2025年3月31日 の1年間の実績データを使用
+
 
 訓練内容
 
@@ -46,6 +48,7 @@ beer-prediction-system/
 特徴工程: 曜日、季節性、顧客数、天気要因等の複合特徴量生成
 
 ハイパーパラメータ最適化: 最適なモデルパラメータの自動探索
+
 
 対象ビール種類
 
@@ -60,6 +63,7 @@ IPA (India Pale Ale)
 黒ビール (Dark Beer)
 
 フルーツビール (Fruit Beer)
+
 
 🚀 使用方法
 
